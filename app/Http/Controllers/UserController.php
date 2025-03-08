@@ -11,16 +11,39 @@ class UserController extends Controller
     public function index()
     {
 
-        $user = UserModel::firstOrNew(
+        $user = UserModel::create(
             [
-                'username' => 'manager33',
-                'nama' => 'Manager Tiga Tiga',
+                'username' => 'manager11',
+                'nama' => 'Manager11',
                 'password' => Hash::make('12345'),
                 'level_id' => 2
             ]
         );
+        $user->username = 'manager12';
+
         $user->save();
-        return view('user', ['data' => $user]);
+
+        $user->wasChanged(); // true
+        $user->wasChanged('username'); // true
+        $user->wasChanged(['username', 'level_id']); // true
+        $user->wasChanged('name'); // false
+        dd($user->wasChanged(['name', 'username'])); // true
+        // $user->isDirty(); //true
+        // $user->isDirty('username'); //true
+        // $user->isDirty('name'); //false
+        // $user->isDirty(['name', 'username']); //true
+
+        // $user->isClean(); //true
+        // $user->isClean('username'); //false
+        // $user->isClean('name'); //true
+        // $user->isClean(['name', 'username']); //false
+
+
+        // $user->isDirty(); //false
+        // $user->isClean(); //true
+        // dd($user->isDirty);
+
+        // return view('user', ['data' => $user]);
 
         // $user = UserModel::firstOrCreate(
         //     [
