@@ -5,6 +5,8 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>{{ config('app.name' , 'PWL Laravel Starter Code') }}</title>
+
+  <meta name="csrf-token" content="{{ csrf_token() }}"> <!-- untuk mengirimkan token laravel csrf pada setiap request ajax -->
   <!--begin::Primary Meta Tags-->
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="title" content="PWL Laravel Starter" />
@@ -36,10 +38,14 @@
     href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
     integrity="sha256-9kPW/n5nn53j4WMRYAxe9c1rCY96Oogo/MKSVdKzPmI="
     crossorigin="anonymous" />
+
+  <!-- DataTables -->
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css" />
   <!--end::Third Party Plugin(Bootstrap Icons)-->
   <!--begin::Required Plugin(AdminLTE)-->
   <link rel="stylesheet" href="{{ asset('adminlte/dist/css/adminlte.css') }}" />
   <!--end::Required Plugin(AdminLTE)-->
+  @stack('css') <!-- digunakan untuk memanggil custom css dari perintah push('css') pada masing-masing view -->
 </head>
 <!--end::Head-->
 <!--begin::Body-->
@@ -108,10 +114,16 @@
     src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
     integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
     crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
   <!--end::Required Plugin(Bootstrap 5)--><!--begin::Required Plugin(AdminLTE)-->
   <script src="{{ asset('adminlte/dist/js/adminlte.js') }}"></script>
   <!--end::Required Plugin(AdminLTE)--><!--begin::OverlayScrollbars Configure-->
+  @stack('js')
   <script>
+    $.ajaxSetup({headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}});
+
     const SELECTOR_SIDEBAR_WRAPPER = '.sidebar-wrapper';
     const Default = {
       scrollbarTheme: 'os-theme-light',
@@ -131,6 +143,7 @@
       }
     });
   </script>
+
   <!--end::OverlayScrollbars Configure-->
   <!--end::Script-->
 </body>
