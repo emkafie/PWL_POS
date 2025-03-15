@@ -4913,7 +4913,7 @@ textarea.form-control-lg {
   padding-right: 3rem;
 }
 .alert-dismissible .btn-close {
-  position: absolute;
+  position: pbsolute;
   top: 0;
   right: 0;
   z-index: 2;

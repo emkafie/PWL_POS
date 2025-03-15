@@ -38,7 +38,7 @@
     crossorigin="anonymous" />
   <!--end::Third Party Plugin(Bootstrap Icons)-->
   <!--begin::Required Plugin(AdminLTE)-->
-  <link rel="stylesheet" href="../../../dist/css/adminlte.css" />
+  <link rel="stylesheet" href="{{ asset('adminlte/dist/css/adminlte.css') }}" />
   <!--end::Required Plugin(AdminLTE)-->
 </head>
 <!--end::Head-->
@@ -109,7 +109,7 @@
     integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
     crossorigin="anonymous"></script>
   <!--end::Required Plugin(Bootstrap 5)--><!--begin::Required Plugin(AdminLTE)-->
-  <script src="../../../dist/js/adminlte.js"></script>
+  <script src="{{ asset('adminlte/dist/js/adminlte.js') }}"></script>
   <!--end::Required Plugin(AdminLTE)--><!--begin::OverlayScrollbars Configure-->
   <script>
     const SELECTOR_SIDEBAR_WRAPPER = '.sidebar-wrapper';
