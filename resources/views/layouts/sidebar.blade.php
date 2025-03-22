@@ -72,6 +72,13 @@
                   <p>Transaksi Penjualan</p>
                 </a>
               </li>
+              <li class="nav-header">Data Supplier</li>
+              <li class="nav-item">
+                <a href="{{ url('/supplier') }}" class="nav-link {{ ($activateMenu == 'supplier' )? 'active' : '' }}">
+                  <i class="nav-icon bi bi-building"></i>
+                  <p>Supplier</p>
+                </a>
+              </li>
             </ul>
             <!--end::Sidebar Menu-->
           </nav>

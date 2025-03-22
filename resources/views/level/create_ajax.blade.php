@@ -35,13 +35,28 @@
                 level_kode: {
                     required: true,
                     minlength: 3,
-                    maxlength: 10
+                    maxlength: 10,
+                    remote: {
+                        url: "{{ url('level/cek_kode') }}",
+                        type: "post",
+                        data: {
+                            level_kode: function() {
+                                return $("#level_kode").val(); // pastikan id input level_kode sesuai
+                            },
+                            _token: "{{ csrf_token() }}" // CSRF wajib di Laravel
+                        }
+                    }
                 },
                 level_nama: {
                     required: true,
                     minlength: 3,
                     maxlength: 100
                 },
+            },
+            messages: {
+                level_kode: {
+                    remote: "Kode Level Sudah Digunakan"
+                }
             },
             submitHandler: function(form) {
                 $.ajax({
@@ -61,6 +76,7 @@
                             $('.error-text').text('');
                             $.each(response.msgField, function(prefix, val) {
                                 $('#error-' + prefix).text(val[0]);
+                                $('#' + prefix).addClass('is-invalid');
                             });
                             Swal.fire({
                                 icon: 'error',
@@ -68,6 +84,13 @@
                                 text: response.message
                             });
                         }
+                    },
+                    error: function(xhr) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Kode Sudah Digunakan',
+                            text: 'Coba Kode Lain!'
+                        });
                     }
                 });
                 return false;

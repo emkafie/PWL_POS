@@ -42,6 +42,7 @@ Route::group(['prefix' => 'level'], function () {
     Route::post('/list', [LevelController::class, 'list']);
     Route::get('/create', [LevelController::class, 'create']);      
     Route::post('/', [LevelController::class, 'store']);     
+    Route::post('/cek_kode' , [LevelController::class, 'cek_kode']);
     Route::get('/create_ajax', [LevelController::class, 'create_ajax']);
     Route::post('/ajax', [LevelController::class, 'store_ajax']);       
     Route::get('/{id}', [LevelController::class, 'show']);           

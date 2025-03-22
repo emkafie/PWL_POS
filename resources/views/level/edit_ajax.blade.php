@@ -1,67 +1,50 @@
-@empty($user)
+@empty($level)
 <div id="modal-master" class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
         <div class="modal-header">
             <h5 class="modal-title" id="exampleModalLabel">Kesalahan</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
-            aria-hidden="true"></button>
+                aria-hidden="true"></button>
         </div>
         <div class="modal-body">
             <div class="alert alert-danger">
                 <h5><i class="icon fas fa-ban"></i> Kesalahan!!!</h5>
                 Data yang anda cari tidak ditemukan
             </div>
-            <a href="{{ url('/user') }}" class="btn btn-warning">Kembali</a>
+            <a href="{{ url('/level') }}" class="btn btn-warning">Kembali</a>
         </div>
     </div>
 </div>
 @else
-<form action="{{ url('/user/' . $user->user_id.'/update_ajax') }}" method="POST" id="form-edit">
+<form action="{{ url('/level/' . $level->level_id.'/update_ajax') }}" method="POST" id="form-edit">
     @csrf
     @method('PUT')
     <div id="modal-master" class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Edit Data User</h5>
-                <button type="button" class="close" data-bs-dismiss="modal" aria-
-                    label="Close"><span aria-hidden="true">&times;</span></button>
+                <h5 class="modal-title" id="exampleModalLabel">Edit Data Level</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-
+                    label="Close"></button>
             </div>
             <div class="modal-body">
                 <div class="form-group">
-                    <label>Level Pengguna</label>
-                    <select name="level_id" id="level_id" class="form-control" required>
-                        <option value="">- Pilih Level -</option>
-                        @foreach($level as $l)
-                        <option {{ ($l->level_id == $user->level_id)? 'selected' : '' }}
-                            value="{{ $l->level_id }}">{{ $l->level_nama }}</option>
-                        @endforeach
-                    </select>
-                    <small id="error-level_id" class="error-text form-text text-danger"></small>
+                    <label>Level Kode</label>
+                    <input value="{{ $level->level_kode }}" type="text" name="level_kode"
+                        id="level_kode" class="form-control" required>
+                    <small id="error-level_kode" class="error-text form-text text-danger"></small>
                 </div>
                 <div class="form-group">
-                    <label>Username</label>
-                    <input value="{{ $user->username }}" type="text" name="username"
-                        id="username" class="form-control" required>
-                    <small id="error-username" class="error-text form-text text-danger"></small>
-                </div>
-                <div class="form-group">
-                    <label>Nama</label>
-                    <input value="{{ $user->nama }}" type="text" name="nama" id="nama"
+                    <label>Nama Level</label>
+                    <input value="{{ $level->level_nama }}" type="text" name="level_nama" id="level_nama"
                         class="form-control" required>
-                    <small id="error-nama" class="error-text form-text text-danger"></small>
-                </div>
-                <div class="form-group">
-                    <label>Password</label>
-                    <input value="" type="password" name="password" id="password" class="form-control">
-                    <small class="form-text text-muted">Abaikan jika tidak ingin ubah
-                        password</small>
-                    <small id="error-password" class="error-text form-text text-danger"></small>
+                    <small id="error-level_nama" class="error-text form-text text-danger"></small>
                 </div>
             </div>
             <div class="modal-footer">
                 <button type="button" data-bs-dismiss="modal" class="btn btn-warning">Batal</button>
                 <button type="submit" class="btn btn-primary">Simpan</button>
             </div>
+            <input type="hidden" name="id" id="level_id" value="{{ $level->level_id }}">
         </div>
     </div>
 </form>
@@ -69,23 +52,33 @@
     $(document).ready(function() {
         $("#form-edit").validate({
             rules: {
-                level_id: {
-                    required: true,
-                    number: true
-                },
-                username: {
+                level_kode: {
                     required: true,
                     minlength: 3,
-                    maxlength: 20
+                    maxlength: 10,
+                    remote: {
+                        url: "{{ url('level/cek_kode') }}",
+                        type: "post",
+                        data: {
+                            level_kode: function() {
+                                return $("#level_kode").val(); // pastikan id input level_kode sesuai
+                            },
+                            id: function() { // Kirim ID saat edit!
+                                return $("#level_id").val();
+                            },
+                            _token: "{{ csrf_token() }}" // CSRF wajib di Laravel
+                        }
+                    }
                 },
-                nama: {
+                level_nama: {
                     required: true,
                     minlength: 3,
                     maxlength: 100
                 },
-                password: {
-                    minlength: 6,
-                    maxlength: 20
+            },
+            messages: {
+                level_kode: {
+                    remote: "Kode Level Sudah Digunakan"
                 }
             },
             submitHandler: function(form) {
@@ -101,11 +94,12 @@
                                 title: 'Berhasil',
                                 text: response.message
                             });
-                            dataUser.ajax.reload();
+                            dataLevel.ajax.reload();
                         } else {
                             $('.error-text').text('');
                             $.each(response.msgField, function(prefix, val) {
                                 $('#error-' + prefix).text(val[0]);
+                                $('#' + prefix).addClass('is-invalid');
                             });
                             Swal.fire({
                                 icon: 'error',
@@ -113,6 +107,14 @@
                                 text: response.message
                             });
                         }
+                    },
+                    error: function(xhr) {
+                        console.log(xhr.responseText);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Terjadi Kesalahan',
+                            text: 'Coba Cek Kembali Inputan'
+                        });
                     }
                 });
                 return false;
