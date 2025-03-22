@@ -30,6 +30,10 @@ Route::group(['prefix' => 'user'], function () {
     Route::get('/{id}', [UserController::class, 'show']);           // Menampilkan detail user
     Route::get('/{id}/edit', [UserController::class, 'edit']);      // Menampilkan form edit user
     Route::put('/{id}', [UserController::class, 'update']);         // Mengupdate data user
+    Route::get('/{id}/edit_ajax', [UserController::class, 'edit_ajax']);
+    Route::put('/{id}/update_ajax', [UserController::class, 'update_ajax']);
+    Route::get('{id}/delete_ajax', [UserController::class, 'confirm_ajax']);
+    Route::delete('/{id}/delete_ajax', [UserController::class, 'delete_ajax']);      // Menghapus
     Route::delete('/{id}', [UserController::class, 'destroy']);     // Menghapus data user
 });
 
