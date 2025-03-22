@@ -45,6 +45,8 @@
   <!--begin::Required Plugin(AdminLTE)-->
   <link rel="stylesheet" href="{{ asset('adminlte/dist/css/adminlte.css') }}" />
   <!--end::Required Plugin(AdminLTE)-->
+  <!-- Sweetalert -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.css" integrity="sha512-7qq4j3Jzg/2j+UeiiaHfSkZRq8zr9dJ8uN1+QgbKZP9+T6lPCZL6oXcJ9lYvC6jW2euF2nT05bTfWnHxMg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   @stack('css') <!-- digunakan untuk memanggil custom css dari perintah push('css') pada masing-masing view -->
 </head>
 <!--end::Head-->
@@ -114,15 +116,24 @@
     src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
     integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
     crossorigin="anonymous"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
   <!--end::Required Plugin(Bootstrap 5)--><!--begin::Required Plugin(AdminLTE)-->
   <script src="{{ asset('adminlte/dist/js/adminlte.js') }}"></script>
   <!--end::Required Plugin(AdminLTE)--><!--begin::OverlayScrollbars Configure-->
+  <!-- jQuery Validation -->
+  <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/additional-methods.min.js"></script>
+  <!-- Sweetalert -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js" integrity="sha512-7qq4j3Jzg/2j+UeiiaHfSkZRq8zr9dJ8uN1+QgbKZP9+T6lPCZL6oXcJ9lYvC6jW2euF2nT05bTfWnHxMg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   @stack('js')
   <script>
-    $.ajaxSetup({headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}});
+    $.ajaxSetup({
+      headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+      }
+    });
 
     const SELECTOR_SIDEBAR_WRAPPER = '.sidebar-wrapper';
     const Default = {
