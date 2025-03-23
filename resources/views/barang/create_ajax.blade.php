@@ -1,24 +1,46 @@
-<form action="{{ url('/kategori/ajax') }}" method="POST" id="form-tambah">
+<form action="{{ url('/barang/ajax') }}" method="POST" id="form-tambah">
     @csrf
     <div id="modal-master" class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Tambah Data Kategori</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Tambah Data Barang</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                     aria-hidden="true"></button>
             </div>
             <div class="modal-body">
                 <div class="form-group">
-                    <label>Kode Kategori</label>
-                    <input value="" type="text" name="kategori_kode" id="kategori_kode" class="form-control"
-                        required>
-                    <small id="error-kategori_kode" class="error-text form-text text-danger"></small>
+                    <label>Kategori Barang</label>
+                    <select name="kategori_id" id="kategori_id" class="form-control" required>
+                        <option value="">- Pilih Kategori -</option>
+                        @foreach($kategori as $l)
+                        <option value="{{ $l->kategori_id }}">{{ $l->kategori_nama }}</option>
+                        @endforeach
+                    </select>
+                    <small id="error-kategori_id" class="error-text form-text text-danger"></small>
                 </div>
                 <div class="form-group">
-                    <label>Nama Kategori</label>
-                    <input value="" type="text" name="kategori_nama" id="kategori_nama" class="form-control"
+                    <label>Kode Barang</label>
+                    <input value="" type="text" name="barang_kode" id="barang_kode" class="form-control"
                         required>
-                    <small id="error-kategori_nama" class="error-text form-text text-danger"></small>
+                    <small id="error-barang_kode" class="error-text form-text text-danger"></small>
+                </div>
+                <div class="form-group">
+                    <label>Nama Barang</label>
+                    <input value="" type="text" name="barang_nama" id="barang_nama" class="form-control"
+                        required>
+                    <small id="error-barang_nama" class="error-text form-text text-danger"></small>
+                </div>
+                <div class="form-group">
+                    <label>Harga Beli</label>
+                    <input value="" type="text" name="harga_beli" id="harga_beli" class="form-control"
+                        required>
+                    <small id="error-harga_beli" class="error-text form-text text-danger"></small>
+                </div>
+                <div class="form-group">
+                    <label>Harga Jual</label>
+                    <input value="" type="text" name="harga_jual" id="harga_jual" class="form-control"
+                        required>
+                    <small id="error-harga_jual" class="error-text form-text text-danger"></small>
                 </div>
             </div>
             <div class="modal-footer">
@@ -32,30 +54,44 @@
     $(document).ready(function() {
         $("#form-tambah").validate({
             rules: {
-                kategori_kode: {
+                kategori_id: {
+                    required: true,
+                    number: true
+                },
+                barang_kode: {
                     required: true,
                     minlength: 3,
                     maxlength: 10,
                     remote: {
-                        url: "{{ url('kategori/cek_kode') }}",
+                        url: "{{ url('barang/cek_kode') }}",
                         type: "post",
                         data: {
                             level_kode: function() {
-                                return $("#kategori_kode").val(); // pastikan id input level_kode sesuai
+                                return $("#barang_kode").val(); // pastikan id input level_kode sesuai
                             },
                             _token: "{{ csrf_token() }}" // CSRF wajib di Laravel
                         }
                     }
                 },
-                kategori_nama: {
+                barang_nama: {
                     required: true,
                     minlength: 3,
                     maxlength: 100
                 },
+                harga_beli: {
+                    required: true,
+                    number: true,
+                    min: 0
+                },
+                harga_jual: {
+                    required: true,
+                    number: true,
+                    min: 0
+                }
             },
             messages: {
-                kategori_kode: {
-                    remote: "Kode Kategori Sudah Digunakan"
+                barang_kode: {
+                    remote: "Kode Barang Sudah Digunakan"
                 }
             },
             submitHandler: function(form) {
@@ -71,12 +107,12 @@
                                 title: 'Berhasil',
                                 text: response.message
                             });
-                            dataLevel.ajax.reload();
+                            dataBarang.ajax.reload();
                         } else {
                             $('.error-text').text('');
                             $.each(response.msgField, function(prefix, val) {
                                 $('#error-' + prefix).text(val[0]);
-                                $('#' + prefix).addClass('is-invalid');
+                                $('#'+ prefix).addClass('is-invalid');
                             });
                             Swal.fire({
                                 icon: 'error',
@@ -89,8 +125,8 @@
                         Swal.fire({
                             icon: 'error',
                             title: 'Terjadi Kesalahan',
-                            text: 'Coba Cek Inputan!'
-                        });
+                            text: 'Mohon Periksa Koneksi Internet Anda'
+                        })
                     }
                 });
                 return false;
