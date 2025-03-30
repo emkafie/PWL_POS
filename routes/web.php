@@ -30,7 +30,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/', [WelcomeController::class, 'index']);
 
-    Route::group(['prefix' => 'user'], function () {
+    Route::group(['prefix' => 'user', 'middleware' => ['authorize:ADM,MNG']], function () {
         Route::get('/', [UserController::class, 'index']);              // Menampilkan halaman awal
         Route::post('/list', [UserController::class, 'list']);          // Menampilkan data user
         Route::get('/create', [UserController::class, 'create']);       // Menampilkan form tambah user
@@ -83,7 +83,7 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/{id}', [KategoriController::class, 'destroy']);
     });
 
-    Route::group(['prefix' => 'barang'], function () {
+    Route::group(['prefix' => 'barang', 'middleware' => ['authorize:ADM,MNG']], function () {
         Route::get('/', [BarangController::class, 'index']);
         Route::post('/list', [BarangController::class, 'list']);
         Route::get('/create', [BarangController::class, 'create']);
@@ -101,7 +101,7 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/{id}', [BarangController::class, 'destroy']);
     });
 
-    Route::group(['prefix' => 'supplier'], function () {
+    Route::group(['prefix' => 'supplier', 'middleware' => ['authorize:ADM,MNG,STF']], function () {
         Route::get('/', [SupplierController::class, 'index']);
         Route::post('/list', [SupplierController::class, 'list']);
         Route::get('/create', [SupplierController::class, 'create']);
