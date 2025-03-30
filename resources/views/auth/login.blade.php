@@ -62,6 +62,9 @@ ack">
                         <!-- /.col -->
                     </div>
                 </form>
+                <div class="text-center mt-3">
+                    <p>Belum punya akun? <a href="{{ route('register') }}?action=register" class="text-primary">Daftar di sini</a></p>
+                </div>
             </div>
             <!-- /.card-body -->
         </div>

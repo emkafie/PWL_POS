@@ -22,7 +22,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::pattern('id', '[0-9]+');
 
-Route::get('login', [AuthController::class, 'login'])->name('login'); // Menampilkan form login
+Route::get('register', [AuthController::class, 'loginOrRegister'])->name('register'); // Menampilkan form registrasi
+Route::post('register', [AuthController::class, 'storeRegister']); // Memproses data registrasi
+Route::get('login', [AuthController::class, 'loginOrRegister'])->name('login'); // Menampilkan form login
 Route::post('login', [AuthController::class, 'postlogin']); // Proses login
 Route::get('logout', [AuthController::class, 'logout'])->name('logout'); // Proses logout
 
