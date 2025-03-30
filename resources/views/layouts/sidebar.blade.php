@@ -79,8 +79,15 @@
                   <p>Supplier</p>
                 </a>
               </li>
+              <li class="nav-item">
+                <a href="#" class="nav-link text-danger" data-bs-toggle="modal" data-bs-target="#logoutModal">
+                  <i class="nav-icon bi bi-box-arrow-right"></i>
+                  <p>Logout</p>
+                </a>
+              </li>
             </ul>
             <!--end::Sidebar Menu-->
           </nav>
         </div>
+
         <!--end::Sidebar Wrapper-->
