@@ -348,7 +348,7 @@ class SupplierController extends Controller
 
                 return response()->json([
                     'status' => true,
-                    'message' => 'Data Kategori Berhasil Di-import',
+                    'message' => 'Data Supplier Berhasil Di-import',
                 ]);
             }
             return response()->json([
@@ -357,5 +357,55 @@ class SupplierController extends Controller
             ]);
         }
         redirect('/');
+    }
+
+    public function export_excel()
+    {
+        $supplier = SupplierModel::all();
+
+        $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        $sheet->setCellValue('A1', 'No');
+        $sheet->setCellValue('B1', 'Kode Supplier');
+        $sheet->setCellValue('C1', 'Nama Supplier');
+        $sheet->setCellValue('D1', 'Email');
+        $sheet->setCellValue('E1', 'No Telepon');
+        $sheet->setCellValue('F1', 'Alamat');
+        $sheet->getStyle('A1:F1')->getFont()->setBold(true);
+
+        $no = 1;
+        $row = 2;
+        foreach ($supplier as $item) {
+            $sheet->setCellValue('A' . $row, $no);
+            $sheet->setCellValue('B' . $row, $item->supplier_code);
+            $sheet->setCellValue('C' . $row, $item->supplier_nama);
+            $sheet->setCellValue('D' . $row, $item->email);
+            $sheet->setCellValue('E' . $row, $item->no_telp);
+            $sheet->setCellValue('F' . $row, $item->address);
+            $row++;
+            $no++;
+        }
+
+        foreach (range('A', 'F') as $columnID) {
+            $sheet->getColumnDimension($columnID)->setAutoSize(true);
+        }
+
+        $sheet->setTitle('Data Supplier');
+
+        $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+        $filename = 'Data_Supplier_' . date('Y-m-d_H-i-s') . '.xlsx';
+
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment; filename="' . $filename . '"');
+        header('Cache-Control: max-age=0');
+        header('Cache-Control: max-age=1');
+        header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
+        header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
+        header('Cache-Control: cache, must-revalidate');
+        header('Pragma: public');
+
+        $writer->save('php://output');
+        exit;
     }
 }

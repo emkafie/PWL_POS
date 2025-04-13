@@ -363,7 +363,7 @@ class BarangController extends Controller
 
     public function export_excel()
     {
-        $barang = BarangModel::select('kategori_id', 'barang_nama', 'harga_beli', 'harga_jual')
+        $barang = BarangModel::select('kategori_id', 'barang_kode', 'barang_nama', 'harga_beli', 'harga_jual')
             ->orderBy('kategori_id')
             ->with('kategori')
             ->get();
@@ -381,7 +381,7 @@ class BarangController extends Controller
         $no = 1;
         $row = 2;
         foreach ($barang as $item) {
-            $sheet->setCellValue('A' . $row, $no++);
+            $sheet->setCellValue('A' . $row, $no);
             $sheet->setCellValue('B' . $row, $item->barang_kode);
             $sheet->setCellValue('C' . $row, $item->barang_nama);
             $sheet->setCellValue('D' . $row, $item->harga_beli);
