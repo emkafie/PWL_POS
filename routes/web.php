@@ -22,6 +22,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::pattern('id', '[0-9]+');
 
+
 Route::get('register', [AuthController::class, 'loginOrRegister'])->name('register'); // Menampilkan form registrasi
 Route::post('register', [AuthController::class, 'storeRegister']); // Memproses data registrasi
 Route::get('login', [AuthController::class, 'loginOrRegister'])->name('login'); // Menampilkan form login
@@ -29,8 +30,9 @@ Route::post('login', [AuthController::class, 'postlogin']); // Proses login
 Route::get('logout', [AuthController::class, 'logout'])->name('logout'); // Proses logout
 
 Route::middleware(['auth'])->group(function () {
-
     Route::get('/', [WelcomeController::class, 'index']);
+    Route::get('/profile', [UserController::class, 'profile'])->name('profile');
+    Route::post('/update-foto', [UserController::class, 'updateFoto'])->name('updateFoto');
 
     Route::group(['prefix' => 'user', 'middleware' => ['authorize:ADM,MNG']], function () {
         Route::get('/', [UserController::class, 'index']);              // Menampilkan halaman awal

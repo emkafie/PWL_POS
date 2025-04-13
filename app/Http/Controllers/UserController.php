@@ -355,7 +355,7 @@ class UserController extends Controller
         $sheet->setCellValue('C1', 'Nama User');
         $sheet->setCellValue('D1', 'Level Pengguna');
         $sheet->setCellValue('E1', 'Password');
-        
+
         $sheet->getStyle('A1:E1')->getFont()->setBold(true);
 
         $no = 1;
@@ -406,7 +406,47 @@ class UserController extends Controller
             'isRemoteEnabled' => true,
         ]);
         $pdf->render();
-        
+
         return $pdf->download('Data_User_' . date('Y-m-d_H-i-s') . '.pdf');
+    }
+
+    public function updateFoto(Request $request)
+    {
+        $request->validate([
+            'foto' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Validasi file
+        ]);
+
+        $user = auth()->user(); // Ambil pengguna yang sedang login
+
+        // Hapus foto lama jika ada
+        if ($user->foto && file_exists(public_path('uploads/foto/' . $user->foto))) {
+            unlink(public_path('uploads/foto/' . $user->foto));
+        }
+
+        // Simpan foto baru
+        $file = $request->file('foto');
+        $filename = time() . '_' . $file->getClientOriginalName();
+        $file->move(public_path('uploads/foto'), $filename);
+
+        // Update kolom foto di database
+        $user = UserModel::find($user->user_id);
+        $user->foto = $filename;
+        $user->save();
+
+        return redirect()->back()->with('success', 'Foto profil berhasil diperbarui.');
+    }
+    public function profile()
+    {
+        $user = auth()->user(); // Ambil data pengguna yang sedang login
+        
+        if (!$user) {
+            return redirect('/login')->with('error', 'Anda harus login untuk mengakses halaman ini.');
+        }
+
+        $breadcrumb = (object) [
+            'title' => 'Profil Pengguna',
+            'list' => ['Home', 'Profil']
+        ];
+        return view('user.profile', compact('user', 'breadcrumb'));
     }
 }

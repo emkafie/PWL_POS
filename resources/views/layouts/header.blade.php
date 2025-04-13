@@ -1,4 +1,4 @@
-      <nav class="app-header navbar navbar-expand bg-body">
+<nav class="app-header navbar navbar-expand bg-body">
         <!--begin::Container-->
         <div class="container-fluid">
           <!--begin::Start Navbar Links-->
@@ -147,6 +147,25 @@
             </li>
             <!--end::Fullscreen Toggle-->
             <!--begin::User Menu Dropdown-->
+            <li class="nav-item dropdown">
+                <a class="nav-link" data-bs-toggle="dropdown" href="#" role="button">
+                    @if(auth()->user()->foto)
+                        <img src="{{ asset('uploads/foto/' . auth()->user()->foto) }}" alt="Foto Profil" class="img-size-25 rounded-circle" width="30">
+                    @else
+                        <img src="{{ asset('uploads/foto/default.png') }}" alt="Default Foto Profil" class="img-size-25 rounded-circle" width="30">
+                    @endif
+                    <span class="ms-2">{{ auth()->user()->nama }}</span>
+                </a>
+                <div class="dropdown-menu dropdown-menu-end">
+                    <a href="{{ route('profile') }}" class="dropdown-item">
+                        <i class="bi bi-person-circle me-2"></i> Profil Saya
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <a href="{{ route('logout') }}" class="dropdown-item text-danger">
+                        <i class="bi bi-box-arrow-right me-2"></i> Logout
+                    </a>
+                </div>
+            </li>
             <!--end::User Menu Dropdown-->
           </ul>
           <!--end::End Navbar Links-->
