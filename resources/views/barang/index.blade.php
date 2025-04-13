@@ -7,6 +7,7 @@
         <div class="card-tools">
             <a class="btn btn-sm btn-primary mt-1" href="{{ url('barang/create') }}">Tambah</a>
             <button onclick="modalAction(`{{ url('barang/create_ajax') }}`)" class="btn btn-sm btn-success mt-1">Tambah Ajax</button>
+            <button onclick="modalAction(`{{ url('barang/import') }}`)" class="btn btn-sm btn-info mt-1">Import Barang</button>
         </div>
     </div>
     <div class="card-body">
@@ -101,12 +102,26 @@
                 data: "harga_beli",
                 className: "",
                 orderable: true,
-                searchable: true
+                searchable: true,
+                render: function(data, type, row) {
+                    return new Intl.NumberFormat('id-ID', {
+                        style: 'currency',
+                        currency: 'IDR',
+                        minimumFractionDigits: 0
+                    }).format(data);
+                }
             }, {
                 data: "harga_jual",
                 className: "",
                 orderable: true,
-                searchable: true
+                searchable: true,
+                render: function(data, type, row) {
+                    return new Intl.NumberFormat('id-ID', {
+                        style: 'currency',
+                        currency: 'IDR',
+                        minimumFractionDigits: 0
+                    }).format(data);
+                }
             }, {
                 data: "aksi",
                 className: "",
