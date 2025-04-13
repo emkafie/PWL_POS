@@ -6,6 +6,7 @@ use App\Models\LevelModel;
 use App\Models\UserModel;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 use Yajra\DataTables\Facades\DataTables;
 
 class UserController extends Controller
@@ -275,5 +276,66 @@ class UserController extends Controller
             }
         }
         return redirect('/');
+    }
+
+    public function import()
+    {
+        return view('user.import');
+    }
+
+    public function import_ajax(Request $request)
+    {
+        if ($request->ajax() || $request->wantsJson()) {
+            $rules = [
+                'file_user' => 'required|mimes:xlsx,xls,csv|max:2048',
+            ];
+
+            $validator = Validator::make($request->all(), $rules);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Validasi Gagal',
+                    'msgField' => $validator->errors(),
+                ], 422);
+            }
+
+            $file = $request->file('file_user');
+
+            $reader = IOFactory::createReader('Xlsx');
+            $reader->setReadDataOnly(true);
+            $spreadsheet = $reader->load($file->getRealPath());
+            $sheet = $spreadsheet->getActiveSheet();
+
+            $data = $sheet->toArray(null, false, true, true);
+
+            $insert = [];
+            if (count($data) > 1) {
+                foreach ($data as $row => $value) {
+                    if ($row > 1) {
+                        $insert[] = [
+                            'level_id' => $value['A'],
+                            'username' => $value['B'],
+                            'nama' => $value['C'],
+                            'password' => bcrypt($value['D']),
+                            'created_at' => now(),
+                        ];
+                    }
+                }
+            }
+            if (count($insert) > 0) {
+                UserModel::insertOrIgnore($insert);
+
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Data Kategori Berhasil Di-import',
+                ]);
+            }
+            return response()->json([
+                'status' => false,
+                'message' => 'Tidak ada data yang di-import',
+            ]);
+        }
+        redirect('/');
     }
 }
