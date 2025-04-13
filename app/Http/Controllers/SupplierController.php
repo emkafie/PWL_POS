@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\SupplierModel;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -407,5 +408,20 @@ class SupplierController extends Controller
 
         $writer->save('php://output');
         exit;
+    }
+
+    public function export_pdf()
+    {
+        $supplier = SupplierModel::all();
+
+        $pdf = Pdf::loadView('supplier.export_pdf', ['supplier' => $supplier]);
+        $pdf->setPaper('A4', 'landscape');
+        $pdf->setOptions(['defaultFont' => 'sans-serif']);
+        $pdf->setOptions([
+            'isRemoteEnabled' => true,
+        ]);
+        $pdf->render();
+        
+        return $pdf->download('Data_Supplier_' . date('Y-m-d_H-i-s') . '.pdf');
     }
 }

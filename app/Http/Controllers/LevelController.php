@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\LevelModel;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -373,5 +374,20 @@ class LevelController extends Controller
 
         $writer->save('php://output');
         exit;
+    }
+
+    public function export_pdf()
+    {
+        $level = LevelModel::all();
+
+        $pdf = Pdf::loadView('level.export_pdf', ['level' => $level]);
+        $pdf->setPaper('A4', 'landscape');
+        $pdf->setOptions(['defaultFont' => 'sans-serif']);
+        $pdf->setOptions([
+            'isRemoteEnabled' => true,
+        ]);
+        $pdf->render();
+        
+        return $pdf->download('Data_Level_' . date('Y-m-d_H-i-s') . '.pdf');
     }
 }
