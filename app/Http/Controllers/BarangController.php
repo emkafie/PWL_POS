@@ -360,4 +360,56 @@ class BarangController extends Controller
         }
         redirect('/');
     }
+
+    public function export_excel()
+    {
+        $barang = BarangModel::select('kategori_id', 'barang_nama', 'harga_beli', 'harga_jual')
+            ->orderBy('kategori_id')
+            ->with('kategori')
+            ->get();
+
+        $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        $sheet->setCellValue('A1', 'No');
+        $sheet->setCellValue('B1', 'Kode Barang');
+        $sheet->setCellValue('C1', 'Nama Barang');
+        $sheet->setCellValue('D1', 'Harga Beli');
+        $sheet->setCellValue('E1', 'Harga Jual');
+        $sheet->setCellValue('F1', 'Kategori');
+
+        $no = 1;
+        $row = 2;
+        foreach ($barang as $item) {
+            $sheet->setCellValue('A' . $row, $no++);
+            $sheet->setCellValue('B' . $row, $item->barang_kode);
+            $sheet->setCellValue('C' . $row, $item->barang_nama);
+            $sheet->setCellValue('D' . $row, $item->harga_beli);
+            $sheet->setCellValue('E' . $row, $item->harga_jual);
+            $sheet->setCellValue('F' . $row, $item->kategori->kategori_nama);
+            $row++;
+            $no++;
+        }
+
+        foreach (range('A', 'F') as $columnID) {
+            $sheet->getColumnDimension($columnID)->setAutoSize(true);
+        }
+
+        $sheet->setTitle('Data Barang');
+
+        $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+        $filename = 'Data_Barang_' . date('Y-m-d_H-i-s') . '.xlsx';
+
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment; filename="' . $filename . '"');
+        header('Cache-Control: max-age=0');
+        header('Cache-Control: max-age=1');
+        header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
+        header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
+        header('Cache-Control: cache, must-revalidate');
+        header('Pragma: public');
+
+        $writer->save('php://output');
+        exit;
+    }
 }
