@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\KategoriModel;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -376,5 +377,20 @@ class KategoriController extends Controller
 
         $writer->save('php://output');
         exit;
+    }
+
+    public function export_pdf()
+    {
+        $kategori = KategoriModel::all();
+
+        $pdf = Pdf::loadView('kategori.export_pdf', ['kategori' => $kategori]);
+        $pdf->setPaper('A4', 'landscape');
+        $pdf->setOptions(['defaultFont' => 'sans-serif']);
+        $pdf->setOptions([
+            'isRemoteEnabled' => true,
+        ]);
+        $pdf->render();
+        
+        return $pdf->download('Data_Kategori_' . date('Y-m-d_H-i-s') . '.pdf');
     }
 }
