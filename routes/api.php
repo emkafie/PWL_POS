@@ -1,8 +1,10 @@
 <?php
 
+use App\Http\Controllers\Api\LoginController;
 use App\Http\Controllers\Api\RegisterController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Log;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,11 +17,34 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::post('/register', function () {
-    return 'Route is working';
-});
-
 Route::post('/register', RegisterController::class);
+Route::post('/login', LoginController::class)->name('login');
+
+Route::middleware('auth:api')->get('/user', function (Request $request) {
+    // Debug: Print semua headers
+    Log::info('Request Headers:', $request->headers->all());
+
+    // Debug: Print token
+    Log::info('Auth Header:', ['Authorization' => $request->header('Authorization')]);
+    // Debug: Print auth status
+    Log::info('Auth Status:', ['is_authenticated' => auth()->check()]);
+
+    if (!$request->user()) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Unauthorized',
+            'debug' => [
+                'has_token' => $request->hasHeader('Authorization'),
+                'token' => $request->header('Authorization')
+            ]
+        ], 401);
+    }
+
+    return response()->json([
+        'success' => true,
+        'user' => $request->user()
+    ], 200);
+});
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();

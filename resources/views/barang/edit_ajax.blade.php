@@ -52,12 +52,12 @@
                 </div>
                 <div class="form-group">
                     <label>Harga Beli</label>
-                    <input value="" type="text" name="harga_beli" id="harga_beli" class="form-control">
+                    <input value="{{ $barang->harga_beli }}" type="text" name="harga_beli" id="harga_beli" class="form-control">
                     <small id="error-harga_beli" class="error-text form-text text-danger"></small>
                 </div>
                 <div class="form-group">
                     <label>Harga Jual</label>
-                    <input value="" type="text" name="harga_jual" id="harga_jual" class="form-control">
+                    <input value="{{ $barang->harga_jual }}" type="text" name="harga_jual" id="harga_jual" class="form-control">
                     <small id="error-harga_jual" class="error-text form-text text-danger"></small>
                 </div>
             </div>
